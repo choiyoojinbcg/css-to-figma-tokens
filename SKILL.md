@@ -14,6 +14,7 @@ Convert any source-side design token file into Figma Variables Import JSON. The 
 3. **Confirm the plan and target collection names with the user** before generating output.
 4. **Generate the output JSON(s)** following the format described below.
 5. **Save outputs** to `/mnt/user-data/outputs/`, present the files, and **print a skip summary** for anything that couldn't be converted (shadows, gradients, etc.).
+6. **For aliased files (C/D), end with a precautions checklist** — collection name to confirm, import order, multi-mode simultaneous import. See `references/cross-collection-precautions.md` for the full checklist.
 
 ## Choosing an Architecture
 
@@ -29,6 +30,8 @@ Figma variables use **collections**. A collection is a group of related variable
 **Default behavior:** Pick the *simplest* architecture that fits the input. If `:root` + `.dark` is the only structure, that's **B**, not C or D — don't over-engineer. Offer to upgrade to C or D only if the user asks or the input explicitly contains primitives.
 
 **Ambiguous cases:** When the input has semantic-only tokens (`--background`, `--primary`) but no primitives, **ask the user**: "Do you want a simple two-mode collection (B), or should I synthesize a primitives layer underneath (C)?"
+
+**Precaution for multi-mode imports (B, D):** Mode files for the same collection must be imported into Figma **simultaneously** (select all files together in the file picker). Importing them one at a time creates separate collections instead of one collection with multiple modes. Tell this to the user when handing over the files.
 
 ## Pre-flight: Confirm Collection Names
 
@@ -49,6 +52,8 @@ For the JSON shape (token structure, sRGB color value, scopes, mode metadata, al
 For deciding what category and `$type` a variable belongs to (color vs number vs fontFamily, what scopes to apply), read `references/category-detection.md`.
 
 For converting color formats (hex, rgb, hsl, **oklch**, lab) into the sRGB component arrays Figma expects, read `references/color-conversion.md`.
+
+**For any file containing `aliasData` (architectures C and D), read `references/cross-collection-precautions.md`** before generating. It covers the five things that must be right (`targetVariableSetName` matching, slash-separated `targetVariableName`, import order, multi-mode simultaneous import, matching VariableIDs), plus troubleshooting for "Encountered errors importing N tokens".
 
 For the three-collection (primitives + theme + mode) architecture in detail — including how aliases chain across collections and how to assign IDs across multiple files — read `references/three-collection-architecture.md`.
 
